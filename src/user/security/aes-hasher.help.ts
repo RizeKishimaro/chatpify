@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
+import { jwtKey } from '../config/jwt.config';
 
 @Injectable()
 export class CryptoService {
   private readonly algorithm = 'aes-256-cbc';
   private readonly ivLength = 16;
-  private readonly key = 'RizeKishimaro367317792Rootroot@l';
+  private readonly key = jwtKey.aes_secret;
 
   encrypt(text: string): string {
-    console.log(text);
-    console.log(this.key.length);
     const iv = randomBytes(this.ivLength);
     const cipher = createCipheriv(this.algorithm, this.key, iv);
     let encrypted = cipher.update(text);
@@ -25,7 +24,6 @@ export class CryptoService {
     const decipher = createDecipheriv(this.algorithm, this.key, iv);
     let decrypted = decipher.update(encrypted);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
-    console.log(decrypted.toString())
     return decrypted.toString();
   }
 }

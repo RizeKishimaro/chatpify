@@ -49,10 +49,12 @@ export class UserService {
         400,
       );
     }
-    const securityKey = cryptoService.encrypt('user');
+    const securityKey = cryptoService.encrypt(user.role);
+    const id = cryptoService.encrypt(user.id);
     const payload = {
+      l2kk321_JW7hI0DpJ1: id,
       xvb32kk: securityKey,
-      userid: user._id,
+      userid: user.id,
       islogged: true,
     };
     return {

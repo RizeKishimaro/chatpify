@@ -9,7 +9,6 @@ import {
   Patch,
   Post,
   Req,
-  Session,
   UseFilters,
   UseGuards,
 } from '@nestjs/common';
@@ -61,12 +60,7 @@ export class UserController {
 
   @Post('/login')
   @HttpCode(HttpStatus.OK)
-  async loginUser(
-    @Param() id: string,
-    @Body() userInfo: LoginDto,
-    @Session() session: Record<string, any>,
-    @Req() req: any,
-  ) {
+  async loginUser(@Param() id: string, @Body() userInfo: LoginDto) {
     const result = await this.userService.loginUser(
       id,
       userInfo.password,
