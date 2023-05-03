@@ -6,7 +6,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Observable } from 'rxjs';
 import { JwtService } from '@nestjs/jwt';
 import { CryptoService } from 'src/user/security/aes-hasher.help';
 import { PremiumRoles } from 'src/user/config/database.enum';
@@ -19,7 +18,7 @@ export class RolesGuard implements CanActivate {
     private reflactor: Reflector,
     private cryptoService: CryptoService,
     private jwtService: JwtService,
-    private jwtHelper: JWTHelper
+    private jwtHelper: JWTHelper,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const requiredRoles = this.reflactor.getAllAndOverride<PremiumRoles[]>(
@@ -32,7 +31,7 @@ export class RolesGuard implements CanActivate {
 
     try {
       const req = context.switchToHttp().getRequest();
-      const extractor = this.jwtHelper.extractTokenFromHeader(req)
+      const extractor = this.jwtHelper.extractTokenFromHeader(req);
       const payload = await this.jwtService.verify(extractor, {
         secret: jwtKey.secret,
       });

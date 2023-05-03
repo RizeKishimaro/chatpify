@@ -75,7 +75,7 @@ export class UserService {
   }
 
   patchUser(id: number, userInfo: object) {
-    const user = this.userModel.findByIdAndUpdate(id, userInfo);
+    return this.userModel.findByIdAndUpdate(id, userInfo);
   }
 
   updateUser(id: number) {

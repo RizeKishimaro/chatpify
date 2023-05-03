@@ -1,5 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import * as parser from 'cookie-parser';
+import helmet from 'helmet';
+import * as csurf from 'csurf';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
@@ -10,6 +12,8 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', '..', 'public'));
   app.setBaseViewsDir(join(__dirname, '..', '..', 'views'));
   app.use(parser());
+  app.use(helmet());
+  app.use(csurf({}));
   app.enableCors({
     origin: '*',
     methods: ['GET', 'POST'],
