@@ -1,11 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {
-  IsString,
-  IsEmail,
-  IsDate,
-  IsNotEmpty,
-  IsBoolean,
-} from 'class-validator';
+import { IsString, IsEmail, IsNotEmpty } from 'class-validator';
 
 @Injectable()
 export class CreateUserDto {
@@ -22,7 +16,6 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   readonly passwordConfirm: string;
-  @IsDate()
   readonly passwordChangeAt: Date;
 
   readonly user_pic: string;
@@ -35,9 +28,7 @@ export class CreateUserDto {
 
   readonly passwordChangeToken: string;
 
-  @IsDate()
   readonly passwordChangeTokenExpires: Date;
 
-  @IsBoolean()
   readonly active: boolean;
 }

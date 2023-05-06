@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Req,
+  Res,
   UseFilters,
   UseGuards,
 } from '@nestjs/common';
@@ -22,7 +23,7 @@ import {
 } from './error/handlers/handlers.filter';
 import { Roles } from './decorators/role.decorator';
 import { PremiumRoles } from './config/database.enum';
-import { CryptoService } from './security/aes-hasher.help';
+import { CryptoService } from '../security/aes-hasher.help';
 
 @Controller('users')
 export class UserController {
@@ -41,32 +42,35 @@ export class UserController {
   }
 
   @UseGuards(JwtGuard)
-  @Get('/profiles/')
+  @Get('profiles')
   @Roles(PremiumRoles.premium)
   getAllUsers(@Req() req: any): Promise<string | object> {
-    console.log(req.user);
     const data = this.userService.getUsers();
     return data;
   }
 
-  @Post('/signup')
+  @Post('signup')
   @UseFilters(HandleValidateError, MongoExceptionFilter)
   async signUpUser(@Body() userInfo: CreateUserDto, @Req() req: any) {
-    console.log(req.user);
     const signInInfo = await this.userService.createUser(userInfo, req);
-    console.log(req.user);
+    console.log(signInInfo);
     return signInInfo;
   }
+  @Get('login')
+  renderLogin(@Req() req: any, @Res() res: any) {
+    return res.render('login');
+  }
 
-  @Post('/login')
+  @Post('login')
   @HttpCode(HttpStatus.OK)
-  async loginUser(@Param() id: string, @Body() userInfo: LoginDto) {
+  async loginUser(@Body() userInfo: LoginDto) {
+    const email = { email: userInfo.email };
     const result = await this.userService.loginUser(
-      id,
+      email,
       userInfo.password,
       new CryptoService(),
     );
-    return result.info;
+    return result;
   }
 
   @Patch('profile/:id')

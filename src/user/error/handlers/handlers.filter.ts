@@ -2,6 +2,7 @@ import {
   ArgumentsHost,
   Catch,
   ExceptionFilter,
+  HttpException,
   HttpStatus,
 } from '@nestjs/common';
 
@@ -44,7 +45,13 @@ export class HandleValidateError implements ExceptionFilter {
         message: `The User \`${request.params.id}\` is not valid type`,
       });
     } else {
-      throw new Error('Sorry we had encountered some errors');
+      return new HttpException(
+        {
+          error: '_ERR',
+          message: 'Sorry the server is Currently In Shutdown',
+        },
+        500,
+      );
     }
   }
 }

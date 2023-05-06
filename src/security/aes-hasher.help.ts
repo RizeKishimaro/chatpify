@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
-import { jwtKey } from '../config/jwt.config';
+import { jwtKey } from '../user/config/jwt.config';
 
 @Injectable()
 export class CryptoService {
@@ -13,7 +13,6 @@ export class CryptoService {
     const cipher = createCipheriv(this.algorithm, this.key, iv);
     let encrypted = cipher.update(text);
     encrypted = Buffer.concat([encrypted, cipher.final()]);
-    console.log(iv.toString('hex') + ':' + encrypted.toString('hex'));
     return iv.toString('hex') + ':' + encrypted.toString('hex');
   }
 

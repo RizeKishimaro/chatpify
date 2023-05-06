@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { IsNotEmpty } from 'class-validator';
+import { IsEmail, IsNotEmpty } from 'class-validator';
 
 Injectable();
 export class LoginDto {
   @IsNotEmpty()
+  @IsEmail()
   email: string;
 
   @IsNotEmpty()

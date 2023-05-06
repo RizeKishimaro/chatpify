@@ -1,23 +1,28 @@
 import { NestFactory } from '@nestjs/core';
-import * as parser from 'cookie-parser';
 import helmet from 'helmet';
-import * as csurf from 'csurf';
+
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
+import { jwtKey } from './user/config/jwt.config';
+import { Res, ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: true,
   });
   app.useStaticAssets(join(__dirname, '..', '..', 'public'));
   app.setBaseViewsDir(join(__dirname, '..', '..', 'views'));
-  app.use(parser());
   app.use(helmet());
-  app.use(csurf({}));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    }),
+  );
   app.enableCors({
     origin: '*',
     methods: ['GET', 'POST'],
-    allowedHeaders: ['chatpify-user'],
+    allowedHeaders: ['chatpify-user', 'content-type'],
     credentials: true,
   });
   app.setViewEngine('hbs');

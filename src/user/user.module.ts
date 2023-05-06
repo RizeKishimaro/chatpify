@@ -7,7 +7,9 @@ import { User, UserSchema } from './schema/user.schema';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtKey } from './config/jwt.config';
 import { MongoExceptionFilter } from './error/handlers/handlers.filter';
-import { CryptoService } from './security/aes-hasher.help';
+import { CryptoService } from '../security/aes-hasher.help';
+import { JWTExtractor } from 'src/security/jwtExtractor.help';
+import { JWTHelper } from 'src/security/jwt-helper.help';
 
 @Module({
   imports: [
@@ -19,6 +21,13 @@ import { CryptoService } from './security/aes-hasher.help';
     }),
   ],
   controllers: [UserController],
-  providers: [UserService, CreateUserDto, MongoExceptionFilter, CryptoService],
+  providers: [
+    UserService,
+    CreateUserDto,
+    MongoExceptionFilter,
+    CryptoService,
+    JWTExtractor,
+    JWTHelper,
+  ],
 })
 export class UserModule {}
