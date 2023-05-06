@@ -34,21 +34,23 @@ export class ChatGateway
   afterInit(server: Socket) {
     console.log(`server started `);
   }
-  async handleConnection(@Req() req, client: Socket, ...args: any[]) {
+  async handleConnection(req: any, ...args: any[]) {
     // const name = this.chatService.find();
     const userToken = req.handshake.headers.auth;
     const userParamToken = req;
-    console.log(userParamToken);
     if (!userToken) {
       this.ws.emit('login_failed', { message: 'Please login!' });
-      return this.ws.disconnectSockets();
+      return;
     }
     const token = this.cryptoService.decrypt(userToken);
     const payload = await this.jwtExtractor.checkJwt(token);
     const username = this.jwtExtractor.decrypt(payload.ll2zBSe2ee2uE2);
     const userId = payload.userid;
     req.user = { username, userId };
-    this.ws.emit('clientConnect', `${username} connected to the chat`);
+    this.ws.emit(
+      'clientConnect',
+      `${username} connected to the chat the userID is ${req.id}`,
+    );
   }
   @UseGuards(ChatGuard)
   handleDisconnect(client: Socket) {
@@ -58,9 +60,18 @@ export class ChatGateway
   @UseGuards(ChatGuard)
   @SubscribeMessage('messageToServer')
   sendMessage(client: any, text: string): void {
-    this.ws.emit('messageOnClient', {
-      sender: client.user.username,
-      message: text,
-    });
+    console.log(client.rooms);
+    const id = client.id;
+    client.to(id).emit('newPrivateMessage', text);
   }
+  // @SubscribeMessage('join')
+  // createRoom(client: any, data: any) {
+  //   const name = client.user.username;
+  //   const id = client.user.userId;
+  //   console.log(client.user);
+  //   const roomName = `${id}`;
+  //   client.join(roomName);
+  //   console.log(`${client.user.username} joined room ${roomName}`);
+  //   console.log(client.rooms);
+  // }
 }

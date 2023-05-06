@@ -13,7 +13,6 @@ export class ChatGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const logger = new Logger(ChatGuard.name);
     const client = context.switchToWs().getClient();
-    console.log(client.handshake);
     const authKey = client.handshake.headers.auth;
     if (!authKey) {
       return false;

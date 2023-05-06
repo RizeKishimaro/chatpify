@@ -44,6 +44,14 @@ export class HandleValidateError implements ExceptionFilter {
         statusCode: HttpStatus.BAD_REQUEST,
         message: `The User \`${request.params.id}\` is not valid type`,
       });
+    } else if (
+      validateError.name === 'SyntaxError' &&
+      validateError.message.includes('JSON')
+    ) {
+      return response.status(400).json({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'Invalid JSON format',
+      });
     } else {
       return new HttpException(
         {
