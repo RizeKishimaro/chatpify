@@ -38,7 +38,7 @@ import { JWTExtractor } from './security/jwtExtractor.help';
     },
     CryptoService,
     JWTHelper,
-    GoogleOAuth2,
+    // GoogleOAuth2,
     CspInserter,
     JWTExtractor,
   ],

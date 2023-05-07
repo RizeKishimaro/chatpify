@@ -47,22 +47,24 @@ export class ChatGateway
     const username = this.jwtExtractor.decrypt(payload.ll2zBSe2ee2uE2);
     const userId = payload.userid;
     req.user = { username, userId };
-    this.ws.emit(
-      'clientConnect',
-      `${username} connected to the chat the userID is ${req.id}`,
-    );
+    this.ws.emit('clientConnect', { username: username, id: req.id });
   }
   @UseGuards(ChatGuard)
-  handleDisconnect(client: Socket) {
-    this.ws.emit('clientDisconnect', client.id);
+  handleDisconnect(client: any) {
+    const username = client.user.username;
+    const id = client.id;
+    this.ws.emit('clientDisconnect', { username, id });
   }
 
   @UseGuards(ChatGuard)
   @SubscribeMessage('messageToServer')
-  sendMessage(client: any, text: string): void {
+  sendMessage(client: any, { message, to }): void {
     console.log(client.rooms);
-    const id = client.id;
-    client.to(id).emit('newPrivateMessage', text);
+    const name = client.user.username;
+    client
+      .to(to)
+      .to(client.id)
+      .emit('newPrivateMessage', { sender: name, message: message });
   }
   // @SubscribeMessage('join')
   // createRoom(client: any, data: any) {
